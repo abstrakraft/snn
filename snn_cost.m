@@ -1,3 +1,3 @@
-function C = snn_cost(p, x, y)
+function C = snn_cost(p, net, x, y)
 
-C = sum((snn(p, x) - y).^2, 1)/2;
+C = sum((snn(p, net, x) - y).^2, 1)/2;
