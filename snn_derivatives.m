@@ -6,12 +6,12 @@ z = {};
 a = {x};
 p_cursor = 1;
 for ldx = 1:layer_count
-	W_size = [net(ldx+1) net(ldx)];
+	W_size = [net(ldx+1) net(ldx)+1];
 	W_numel = prod(W_size);
 	W{end+1} = reshape(p(p_cursor:(p_cursor+W_numel-1)), W_size);
 	p_cursor = p_cursor + W_numel;
 
-	z{end+1} = W{end} * a{end};
+	z{end+1} = W{end} * [a{end}; 1];
 	a{end+1} = snn_f(z{end});
 end
 
@@ -20,12 +20,12 @@ err = a{end} - y;
 prev_partial = err.' .* snn_fdot(z{end}).';
 for ldx = layer_count:-1:1
 	W_numel = numel(W{ldx});
-	p_cursor = p_cursor - W_numel;;
-	W_dot = prev_partial.' * a{ldx}.';
+	p_cursor = p_cursor - W_numel;
+	W_dot = prev_partial.' * [a{ldx}; 1].';
 	J(p_cursor:(p_cursor+W_numel-1)) = reshape(W_dot, [1 W_numel]);
 	if ldx > 1
-        pp = prev_partial;
-		prev_partial = pp * W{ldx} .* snn_fdot(z{ldx-1}).';
+		pp = prev_partial;
+		prev_partial = pp * W{ldx}(:,1:end-1) .* snn_fdot(z{ldx-1}).';
 	end
 end
 

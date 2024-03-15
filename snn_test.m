@@ -1,7 +1,7 @@
 function snn_test()
 
 net = [1 6 4 8 5 3];
-p_len = sum(net(1:(end-1)) .* net(2:end));
+p_len = sum((1+net(1:(end-1))) .* net(2:end));
 p = randn([p_len 1]);
 x = randn([net(1) 1]);
 y = randn([net(end) 1]);
